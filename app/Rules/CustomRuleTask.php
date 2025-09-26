@@ -23,13 +23,12 @@ class CustomRuleTask implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        //    $sql = 'SELECT COUNT(is_completed)
-        //     FROM tasks WHERE is_completed = 0 AND user_id = $user_id';
-        // $isMaxCompleted = DB::select($sql);
+        $pendingTasksCount = Task::where('user_id', $this->user_id)
+            ->where('is_completed', 0)
+            ->count();
 
-        $isMaxCompleted = Task::where('is_completed', 0)->where('user_id', $this->user_id)->count();
-        if ($isMaxCompleted < 6) {
-            $fail('El usuario tiene más de 5 tareas pendientes');
+        if ($pendingTasksCount >= 5) {
+            $fail("El usuario ya tiene 5 tareas pendientes.");
         }
     }
 }
