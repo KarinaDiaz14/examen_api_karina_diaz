@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use App\Rules\CustomRuleTask;
 use Illuminate\Http\Request;
@@ -36,10 +37,9 @@ class TaskController extends Controller
         ]);
      
         $task = Task::create($request->all());
-
-        return response()->json([
-            'task' => $task
-        ]);
+        $task->load(['company']);
+        
+        return new TaskResource($task);
     
     }
 
